@@ -1,5 +1,10 @@
 // App.js
+
 import React from 'react';
+import RecipesList from './RecipiesList';
+import RecipeItemEntry from './RecipeItemEntry'
+
+
 
 class App extends React.Component {
   constructor(props) {
@@ -8,13 +13,30 @@ class App extends React.Component {
       isAddRecipeFormDisplayed: false,
       recipes: [],
       newRecipeName: '',
-      newRecipeInstructions: ''
+      newRecipeInstructions: '',
+
     }
+    this.baseState = this.state 
+
     this.handleRecipeNameChange = this.handleRecipeNameChange.bind(this)
     this.handleRecipeInstructionsChange = this.handleRecipeInstructionsChange.bind(this)
-    this.submitRecipe =this.submitRecipe.bind(this)
+    this.submitRecipe = this.submitRecipe.bind(this)
+    this.resetForm = this.resetForm.bind(this)
+
+    // The bind() method creates a new function that, when called, has its this keyword set to the provided
+    // value, with a given sequence of arguments preceding any provided when the new function is called.
+
+
  
   }
+
+  resetForm = () => {
+    this.setState({showStore:false});
+  }
+
+  onStoreClick = function() {
+    this.setState({ showStore: true });
+}
   
   toggleAddRecipeForm = () => {
     this.setState({isAddRecipeFormDisplayed: !this.state.isAddRecipeFormDisplayed})
@@ -43,6 +65,9 @@ class App extends React.Component {
     this.setState({recipes : recipes_array}) 
   }
 
+
+
+
   render(){
     const addNewRecipeForm = (
       <form id="recipe-form" onSubmit={this.submitRecipe}>
@@ -63,6 +88,12 @@ class App extends React.Component {
     </form>
     )
 
+
+
+
+      
+
+
     return (
       <div className="App">
         <h1 className="App-header">My Recipes</h1>
@@ -72,14 +103,9 @@ class App extends React.Component {
           : <button id="add-recipe" onClick={this.toggleAddRecipeForm.bind(this)}>Add Recipe</button>
         }
         {
-           this.state.recipes.length > 0 ? 
-          <ul id="foodList">
-            {this.state.recipes.map(item  => <li id={item.name} key={item.name}>{item.name}</li>)}
-            {/*console.log(this.state.recipes)*/}
-            {/* console.log(this.state.recipes[0])}
-            {console.log(this.state.recipes[1])} */}
-          </ul> :
-          <p>There are no recipes to list.</p>
+           this.state.recipes.length > 0
+           ? <RecipesList recipes={this.state.recipes}/>
+           : <p>There are no recipes to list.</p>
         }
       </div>
     )
