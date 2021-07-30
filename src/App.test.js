@@ -1,7 +1,8 @@
 //src App.test.js
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { cleanup } from '@testing-library/react'
 import App from './App';
 
 const setup = () => {
@@ -64,25 +65,33 @@ test('recipe name from state appears in an unordered list', async () => {
   await userEvent.type(nameInput, recipeName)
   userEvent.click(submitButton);
 
-  expect(screen.getByRole('listitem')).toBeInTheDocument();
+  expect(screen.getAllByRole('listitem')[0]).toBeInTheDocument();
   expect(screen.getByText(recipeName)).toBeInTheDocument();
 })
 
 test('Two recipes name from state appear in an unordered list', async () => {
-  const {instructionsInput, nameInput, submitButton} = setup();
-  const recipeName = "Lean Pockets"
-  const recipeInstructions = "place in toaster oven on 350 for 45 minutes"
-  const recipeName2 = 'Keto cookies'
-  const recipeInstructions2 = "Bake in oven for 30 minute"
+  var {instructionsInput, nameInput, submitButton} = setup();
+  var recipeName = "Lean Pockets"
+  var recipeInstructions = "place in toaster oven on 350 for 45 minutes"
 
   await userEvent.type(instructionsInput, recipeInstructions)
   await userEvent.type(nameInput, recipeName)
   userEvent.click(submitButton);
-
+  
+  var recipeName2 = 'Keto cookies'
+  var recipeInstructions2 = "Bake in oven for 30 minute"
+  
   await userEvent.type(instructionsInput, recipeInstructions2)
   await userEvent.type(nameInput, recipeName2)
   userEvent.click(submitButton);
+ 
 
-  expect(screen.get('.listitem-1')).toBeInTheDocument();
-  expect(screen.get('.listitem-2')).toBeInTheDocument();
+  render(<App/>)
+ 
+    const list = screen.getByRole("list")
+    const { getAllByRole } = within(list)
+    const items = getAllByRole("listitem")
+    expect(items.length).toBe(2)
 })
+
+
